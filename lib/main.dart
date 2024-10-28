@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ws_colombia_m2/pages/auth/login_page.dart';
 import 'package:ws_colombia_m2/pages/home/home_page.dart';
 import 'package:ws_colombia_m2/pages/splash/splash_page.dart';
 import 'package:ws_colombia_m2/theme/app_colors.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: AppColors.white,
         ),
         debugShowCheckedModeBanner: false,
-        home: SplashPage(),
+        home: LoginPage(),
       ),
     );
   }

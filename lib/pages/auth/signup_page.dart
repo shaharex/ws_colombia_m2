@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ws_colombia_m2/pages/home/home_page.dart';
 
 import '../../components/custom_button.dart';
 import '../../components/custom_textfield.dart';
@@ -17,6 +22,39 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfimController =
       TextEditingController();
+
+  final dio = Dio();
+
+  void register(BuildContext context) async {
+    try {
+      // register user,create user
+      final data = json.encode({
+        'username': _emailController.text,
+        'email': _emailController.text,
+        'firstName': _fullNameController.text,
+        'lastName': _fullNameController.text,
+        'age': 16,
+        'password': _passwordController.text,
+      });
+      final response =
+          await dio.post('https://dummyjson.com/users/add', data: data, options: Options(responseType: ResponseType.json));
+
+
+      // login the user and so on
+      final dataSignIn = json.encode({"email": _emailController.text, "password": _passwordController.text});
+      final responseSignIn = await dio.post("https://dummyjson.com/users/login", data: dataSignIn);
+
+      // log(responseSignIn.data.toString());
+      final token = responseSignIn.data['accesToken'];
+      // print(token);
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => HomePage(token: token)));
+    } catch (e) {
+      debugPrint(e.toString());
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Something is wrong with the server')));
+    }
+  }
 
   @override
   void dispose() {
@@ -79,17 +117,30 @@ class _SignUpPageState extends State<SignUpPage> {
                 CustomTextfield(
                     controller: _passwordController,
                     hintText: 'Password',
-                    icon: Icons.lock),
+                    icon: Icons.lock,
+                    isObscure: true,
+                    ),
                 const SizedBox(height: 10),
                 CustomTextfield(
                     controller: _passwordConfimController,
                     hintText: 'Password confirmation',
-                    icon: Icons.lock),
+                    icon: Icons.lock,
+                    isObscure: true,),
                 const SizedBox(height: 20),
 
                 // buttons
                 CustomButton(
-                    onTap: () {}, color: AppColors.orange, btnText: 'Register'),
+                    onTap: () {
+                      if (_emailController.text.isNotEmpty && _fullNameController.text.isNotEmpty && _passwordController.text.isNotEmpty && _passwordConfimController.text.isNotEmpty) {
+                        if (_passwordController.text == _passwordConfimController.text) {
+                          register(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Passwords are not the same')));
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all the blanks')));
+                      }
+                    }, color: AppColors.orange, btnText: 'Register'),
                 const SizedBox(height: 20),
                 Row(
                   children: [
@@ -125,7 +176,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 CustomButton(
                     onTap: () {
                       Navigator.pop(context);
-                    }, color: AppColors.black, btnText: 'Sign In'),
+                    },
+                    color: AppColors.black,
+                    btnText: 'Sign In'),
                 const SizedBox(height: 20),
 
                 // worldskills icon

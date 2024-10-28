@@ -145,7 +145,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                             Navigator.pop(context);
                           },
                           color: AppColors.black,
-                          btnText: 'Sign Up'),
+                          btnText: 'Sign In'),
                     ),
                   ],
                 ),

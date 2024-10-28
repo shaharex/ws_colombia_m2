@@ -1,8 +1,12 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ws_colombia_m2/components/custom_button.dart';
 import 'package:ws_colombia_m2/components/custom_textfield.dart';
 import 'package:ws_colombia_m2/pages/auth/password_reset_page.dart';
 import 'package:ws_colombia_m2/pages/auth/signup_page.dart';
+import 'package:ws_colombia_m2/pages/home/home_page.dart';
 import 'package:ws_colombia_m2/theme/app_colors.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,8 +17,30 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final dio = Dio();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  void signIn(BuildContext context) async {
+    try {
+      final data = jsonEncode({
+        'username': _emailController.text,
+        'password': _passwordController.text,
+      });
+      final response =
+          await dio.post('https://dummyjson.com/auth/login', data: data);
+
+      final token = response.data['accessToken'];
+
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => HomePage(token: token)));
+    } catch (e) {
+      debugPrint(e.toString());
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('this is the error: $e')));
+    }
+  }
 
   @override
   void dispose() {
@@ -68,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                       icon: Icons.email),
                   const SizedBox(height: 10),
                   CustomTextfield(
+                      isObscure: true,
                       controller: _passwordController,
                       hintText: 'Password',
                       icon: Icons.lock),
@@ -75,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   // buttons
                   CustomButton(
-                      onTap: () {},
+                      onTap: () => signIn(context),
                       color: AppColors.orange,
                       btnText: 'Sign in'),
                   const SizedBox(height: 20),
@@ -115,7 +142,10 @@ class _LoginPageState extends State<LoginPage> {
                       Expanded(
                         child: CustomButton(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SignUpPage()));
                             },
                             color: AppColors.black,
                             btnText: 'Sign Up'),
@@ -126,7 +156,11 @@ class _LoginPageState extends State<LoginPage> {
                       Expanded(
                         child: CustomButton(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordResetPage()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PasswordResetPage()));
                             },
                             color: AppColors.black,
                             btnText: 'Password Reset'),
