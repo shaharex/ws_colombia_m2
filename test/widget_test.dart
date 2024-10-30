@@ -7,24 +7,54 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ws_colombia_m2/components/custom_textfield.dart';
 
-import 'package:ws_colombia_m2/main.dart';
+import 'package:ws_colombia_m2/pages/auth/login_page.dart';
+import 'package:ws_colombia_m2/pages/auth/password_reset_page.dart';
+import 'package:ws_colombia_m2/pages/auth/signup_page.dart';
+import 'package:ws_colombia_m2/pages/home/home_page.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets("Login Page Text displays correctly",
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: LoginPage()));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text("USED ZIP"), findsOneWidget);
+    expect(find.text("Sign in"), findsOneWidget);
+    expect(find.text("Sign Up"), findsOneWidget);
+    expect(find.text("Password Reset"), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets("Textfields contain data", (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: LoginPage()));
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await tester.enterText(find.byType(CustomTextfield).at(0), 'emilys');
+    await tester.enterText(find.byType(CustomTextfield).at(1), 'emilyspass');
+  });
+
+  testWidgets("Sign Up button navigates to SignUpPage",
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: LoginPage()));
+
+    await tester.tap(find.text("Sign Up"));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SignUpPage), findsOneWidget);
+  });
+
+  testWidgets("Password Reset button navigates to Password Reset Page",
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: LoginPage()));
+
+    await tester.tap(find.text("Password Reset"));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PasswordResetPage), findsOneWidget);
+  });
+
+  testWidgets("Home Page Text Displays", (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: HomePage(token: 'woeio',)));
+
+    expect(find.text("Korea - Go Yang"), findsOneWidget);
   });
 }

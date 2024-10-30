@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -36,13 +35,16 @@ class _SignUpPageState extends State<SignUpPage> {
         'age': 16,
         'password': _passwordController.text,
       });
-      final response =
-          await dio.post('https://dummyjson.com/users/add', data: data, options: Options(responseType: ResponseType.json));
-
+      final response = await dio.post('https://dummyjson.com/users/add',
+          data: data, options: Options(responseType: ResponseType.json));
 
       // login the user and so on
-      final dataSignIn = json.encode({"email": _emailController.text, "password": _passwordController.text});
-      final responseSignIn = await dio.post("https://dummyjson.com/users/login", data: dataSignIn);
+      final dataSignIn = json.encode({
+        "email": _emailController.text,
+        "password": _passwordController.text
+      });
+      final responseSignIn =
+          await dio.post("https://dummyjson.com/users/login", data: dataSignIn);
 
       // log(responseSignIn.data.toString());
       final token = responseSignIn.data['accesToken'];
@@ -51,8 +53,8 @@ class _SignUpPageState extends State<SignUpPage> {
           MaterialPageRoute(builder: (context) => HomePage(token: token)));
     } catch (e) {
       debugPrint(e.toString());
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Something is wrong with the server')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Something is wrong with the server')));
     }
   }
 
@@ -80,7 +82,7 @@ class _SignUpPageState extends State<SignUpPage> {
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height,
+            minHeight: MediaQuery.of(context).size.height,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
@@ -115,32 +117,43 @@ class _SignUpPageState extends State<SignUpPage> {
                     icon: Icons.lock),
                 const SizedBox(height: 10),
                 CustomTextfield(
-                    controller: _passwordController,
-                    hintText: 'Password',
-                    icon: Icons.lock,
-                    isObscure: true,
-                    ),
+                  controller: _passwordController,
+                  hintText: 'Password',
+                  icon: Icons.lock,
+                  isObscure: true,
+                ),
                 const SizedBox(height: 10),
                 CustomTextfield(
-                    controller: _passwordConfimController,
-                    hintText: 'Password confirmation',
-                    icon: Icons.lock,
-                    isObscure: true,),
+                  controller: _passwordConfimController,
+                  hintText: 'Password confirmation',
+                  icon: Icons.lock,
+                  isObscure: true,
+                ),
                 const SizedBox(height: 20),
 
                 // buttons
                 CustomButton(
-                    onTap: () {
-                      if (_emailController.text.isNotEmpty && _fullNameController.text.isNotEmpty && _passwordController.text.isNotEmpty && _passwordConfimController.text.isNotEmpty) {
-                        if (_passwordController.text == _passwordConfimController.text) {
-                          register(context);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Passwords are not the same')));
-                        }
+                  onTap: () {
+                    if (_emailController.text.isNotEmpty &&
+                        _fullNameController.text.isNotEmpty &&
+                        _passwordController.text.isNotEmpty &&
+                        _passwordConfimController.text.isNotEmpty) {
+                      if (_passwordController.text ==
+                          _passwordConfimController.text) {
+                        register(context);
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all the blanks')));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Passwords are not the same')));
                       }
-                    }, color: AppColors.orange, btnText: 'Register'),
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Please fill all the blanks')));
+                    }
+                  },
+                  color: AppColors.orange,
+                  btnText: 'Register',
+                ),
                 const SizedBox(height: 20),
                 Row(
                   children: [

@@ -12,15 +12,14 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
   @override
   void initState() {
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
     });
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +53,7 @@ class _SplashPageState extends State<SplashPage> {
                 const SizedBox(height: 45),
                 const Text(
                   'Best used trading anywhere in the world.',
-                  style: TextStyle(
-                    fontFamily: 'Roboto-Light',
-                    fontSize: 16
-                  ),
+                  style: TextStyle(fontFamily: 'Roboto-Light', fontSize: 16),
                 ),
               ],
             ),
